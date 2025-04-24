@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>24-Hour Planner</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .hour-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .hour-label {
+            width: 60px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .task-input {
+            flex: 1;
+        }
+        .task-input input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+        }
+        .task-input input:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+        .save-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        .save-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>24-Hour Planner</h2>
+        <form id="plannerForm">
+            <!-- Hour rows go here -->
+        </form>
+        <button type="button" class="save-button" onclick="saveTasks()">Save Tasks</button>
+    </div>
+
+    <script>
+        // Generate hour rows dynamically
+        const plannerForm = document.getElementById('plannerForm');
+        for (let hour = 0; hour < 24; hour++) {
+            const hourRow = document.createElement('div');
+            hourRow.className = 'hour-row';
+
+            const hourLabel = document.createElement('div');
+            hourLabel.className = 'hour-label';
+            hourLabel.textContent = `${hour.toString().padStart(2, '0')}:00`;
+
+            const taskInput = document.createElement('div');
+            taskInput.className = 'task-input';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = `task${hour}`;
+            input.placeholder = 'Enter task';
+
+            taskInput.appendChild(input);
+            hourRow.appendChild(hourLabel);
+            hourRow.appendChild(taskInput);
+            plannerForm.appendChild(hourRow);
+        }
+
+        // Save tasks to local storage
+        function saveTasks() {
+            const tasks = {};
+            for (let hour = 0; hour < 24; hour++) {
+                const input = document.querySelector(`input[name="task${hour}"]`);
+                tasks[`task${hour}`] = input.value;
+            }
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            alert('Tasks saved!');
+        }
+
+        // Load tasks from local storage
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+            for (let hour = 0; hour < 24; hour++) {
+                const input = document.querySelector(`input[name="task${hour}"]`);
+                input.value = tasks[`task${hour}`] || '';
+            }
+        }
+
+        // Load tasks on page load
+        window.onload = loadTasks;
+    </script>
+</body>
+</html>
